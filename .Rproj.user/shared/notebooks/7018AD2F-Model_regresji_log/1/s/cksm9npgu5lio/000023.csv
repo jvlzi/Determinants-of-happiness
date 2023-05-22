@@ -1,0 +1,5 @@
+"0","reg_log_df <- tidy(reg_log$coefficients)"
+"2","Ostrzeżenie: Funkcja 'tidy.numeric' jest przestarzała.
+Zobacz help(""Deprecated"")"
+"0","reg_log_df$'Exp(B)' <- exp(reg_log_df$x)"
+"0","View(reg_log_df)"

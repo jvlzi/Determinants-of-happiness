@@ -1,0 +1,7 @@
+"0","dane$marsts <- ifelse(dane$marsts <= 2,1,0)"
+"0","print(unique(dane$marsts))"
+"1","[1]"
+"1"," 0"
+"1"," 1"
+"1","
+"

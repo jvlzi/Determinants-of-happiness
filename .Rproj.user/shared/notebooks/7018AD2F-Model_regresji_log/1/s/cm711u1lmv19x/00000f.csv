@@ -1,0 +1,7 @@
+"0","dane$stfgov <- ifelse(dane$stfgov <= 7,0,1)"
+"0","print(unique(dane$stfgov))"
+"1","[1]"
+"1"," 1"
+"1"," 0"
+"1","
+"

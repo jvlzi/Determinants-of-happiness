@@ -1,0 +1,7 @@
+"0","dane$health <- ifelse(dane$health <= 2,1,0)"
+"0","print(unique(dane$health))"
+"1","[1]"
+"1"," 1"
+"1"," 0"
+"1","
+"

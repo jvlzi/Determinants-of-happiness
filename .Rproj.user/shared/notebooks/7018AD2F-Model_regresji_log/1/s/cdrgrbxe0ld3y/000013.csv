@@ -1,0 +1,2 @@
+"0","dane <- read_excel(""data/baza.xlsx"")"
+"0","head(dane)"

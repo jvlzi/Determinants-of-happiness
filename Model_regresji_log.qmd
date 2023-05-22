@@ -1,0 +1,184 @@
+---
+title: "Model_regresji_log"
+---
+
+```{r}
+library(readxl)
+library(data.table)
+```
+
+```{r}
+dane <- read_excel("data/baza.xlsx")
+head(dane)
+```
+
+## Usuwanie wierszy z pustymi wartościami
+
+Usuwanie pustych wartości z kolumny agea i health, gndr
+
+```{r}
+dane <- subset(dane,!agea %in% c(999) & !is.na(agea))
+print(unique(dane$agea))
+
+dane <- subset(dane,!health %in% c(7,8,9) & !is.na(health))
+print(unique(dane$health))
+
+dane <- subset(dane,!gndr %in% c(9) & !is.na(gndr))
+print(unique(dane$gndr))
+```
+
+Usuwanie pustych wartości z reszty kolumn
+
+```{r}
+for(i in c("happy","cntry","sclmeet", "inprdsc","stfeco", "stfgov","stfdem","stfedu","stfhlth","gndr","marsts","nbthcld","hinctnta")){
+  dane <- subset(dane,!get(i) %in% c(66,77,88,99) & !is.na(get(i)))
+}
+print(unique(dane$happy))
+```
+
+## Agregowanie danych jakościowych
+
+Zamieniam wartości z kolumny happy na 0/1
+
+1 -- szczęsliwy (8-10)
+
+0 -- nieszczęśliwy (0-7)
+
+```{r}
+  dane$happy <- ifelse(dane$happy <= 7,0,1)
+  print(unique(dane$happy))
+```
+
+How often socially meet with friends, relatives or colleagues
+
+0- rzadko (1-4)
+
+1- często (5-7)
+
+```{r}
+dane$sclmeet <- ifelse(dane$sclmeet <= 4,0,1)
+print(unique(dane$sclmeet))
+```
+
+How satisfied with present state of economy in country
+
+        0-7 niezadowolony
+
+        8-10 zadowolony
+
+```{r}
+dane$stfeco <- ifelse(dane$stfeco <= 7,0,1)
+print(unique(dane$stfeco))
+```
+
+How satisfied with the national government
+
+        0-7 niezadowolony
+
+        8-10 zadowolony
+
+```{r}
+dane$stfgov <- ifelse(dane$stfgov <= 7,0,1)
+print(unique(dane$stfgov))
+```
+
+How satisfied with the way democracy works in country
+
+        0-7 niezadowolony
+
+        8-10 zadowolony
+
+```{r}
+dane$stfdem <- ifelse(dane$stfdem <= 7,0,1)
+print(unique(dane$stfdem))
+```
+
+State of education in country nowadays
+
+        0-7 zły
+
+        8-10 dobry
+
+```{r}
+dane$stfedu <- ifelse(dane$stfedu <= 7,0,1)
+print(unique(dane$stfedu))
+```
+
+State of health services in country nowadays
+
+        0-7 zły
+
+        8-10 dobry
+
+```{r}
+dane$stfhlth <- ifelse(dane$stfhlth <= 7,0,1)
+print(unique(dane$stfhlth))
+```
+
+Subjective general health - zagregować
+
+        1-2 dobre
+
+        3-5 złe
+
+```{r}
+dane$health <- ifelse(dane$health <= 2,1,0)
+print(unique(dane$health))
+```
+
+Legal marital status
+
+        1-2 w związku
+
+        3-6 samotni
+
+```{r}
+dane$marsts <- ifelse(dane$marsts <= 2,1,0)
+print(unique(dane$marsts))
+```
+
+```{r}
+str(dane)
+```
+
+Aby zbudować model regresji logistycznej wykorzystuję funkcję glm - generalized linear model
+
+```{r}
+reg_log <- glm(happy ~ cntry + sclmeet + inprdsc + health + stfeco + stfgov + stfdem + stfedu + stfhlth + gndr + agea + marsts + nbthcld  + hinctnta, data = dane, family = "binomial")
+summary(reg_log)
+```
+
+estimate - współczynniki
+
+std. error - błędy standardowe
+
+z value - statystyka walda (błąd standardowy / współczynnik)
+
+Pr(\>\|z\|) - p-value
+
+```{r}
+library(broom)
+tidy(reg_log)
+View(reg_log)
+```
+
+```{r}
+augment(reg_log)
+```
+
+## Obliczamy eksponenty wartości współczynników
+
+```{r}
+print(coef(reg_log))
+```
+
+```{r}
+exp_coef <- exp(coef(reg_log))
+print(exp_coef)
+```
+
+```{r}
+reg_log_df <- tidy(reg_log$coefficients)
+reg_log_df$'Exp(B)' <- exp(reg_log_df$x)
+View(reg_log_df)
+```

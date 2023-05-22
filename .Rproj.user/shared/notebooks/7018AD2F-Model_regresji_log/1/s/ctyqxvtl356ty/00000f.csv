@@ -1,0 +1,7 @@
+"0","dane$stfeco <- ifelse(dane$stfeco <= 7,0,1)"
+"0","print(unique(dane$stfeco))"
+"1","[1]"
+"1"," 1"
+"1"," 0"
+"1","
+"
